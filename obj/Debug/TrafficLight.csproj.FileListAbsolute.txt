@@ -1,0 +1,10 @@
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\bin\Debug\TrafficLight.exe.config
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\bin\Debug\TrafficLight.exe
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\bin\Debug\TrafficLight.pdb
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.csproj.AssemblyReference.cache
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.Properties.Resources.resources
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.csproj.GenerateResource.cache
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.csproj.CoreCompileInputs.cache
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.exe
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.pdb
+C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.TrafficLight.resources
