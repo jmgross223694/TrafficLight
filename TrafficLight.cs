@@ -91,7 +91,7 @@ namespace TrafficLight
             labelTemporizador = new Label();
             labelTemporizador.Size = new Size(80, 80);
             labelTemporizador.Text = "";
-            labelTemporizador.Font = new Font("DS-Digital", 42, FontStyle.Regular);
+            labelTemporizador.Font = new Font("DS-Digital", 40, FontStyle.Bold);
             labelTemporizador.ForeColor = Color.White;
             labelTemporizador.TextAlign = ContentAlignment.MiddleCenter;
 
@@ -139,6 +139,7 @@ namespace TrafficLight
             timer.Interval = 1000;
             timer.Tick += Timer_Tick;
             tiempoRestante = 25;
+            labelTemporizador.Text = tiempoRestante.ToString();
             DefinirColoresIniciales();
             timer.Start();
         }
@@ -148,13 +149,15 @@ namespace TrafficLight
             pictureBoxRojo.BackColor = Color.Red;
             pictureBoxNaranja.BackColor = Color.DarkGray;
             pictureBoxVerde.BackColor = Color.DarkGray;
+
+            labelTemporizador.ForeColor = Color.Red;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
             tiempoRestante--;
 
-            labelTemporizador.Text = $"{tiempoRestante}";
+            labelTemporizador.Text = tiempoRestante.ToString();
 
             if (tiempoRestante <= 0)
             {
@@ -168,9 +171,10 @@ namespace TrafficLight
                 && pictureBoxNaranja.BackColor == Color.DarkGray
                 && pictureBoxVerde.BackColor == Color.DarkGray)
             {
-                tiempoRestante = 3;
+                tiempoRestante = 2;
 
-                labelTemporizador.Text = "";
+                labelTemporizador.Text = tiempoRestante.ToString();
+                labelTemporizador.ForeColor = Color.Orange;
 
                 pictureBoxRojo.BackColor = Color.Red;
                 pictureBoxNaranja.BackColor = Color.Orange;
@@ -180,9 +184,10 @@ namespace TrafficLight
                 && pictureBoxNaranja.BackColor == Color.Orange
                 && pictureBoxVerde.BackColor == Color.DarkGray)
             {
-                tiempoRestante = 31;
+                tiempoRestante = 30;
 
-                labelTemporizador.Text = "";
+                labelTemporizador.Text = tiempoRestante.ToString();
+                labelTemporizador.ForeColor = Color.Green;
 
                 pictureBoxRojo.BackColor = Color.DarkGray;
                 pictureBoxNaranja.BackColor = Color.DarkGray;
@@ -192,9 +197,10 @@ namespace TrafficLight
                 && pictureBoxNaranja.BackColor == Color.DarkGray
                 && pictureBoxVerde.BackColor == Color.Green)
             {
-                tiempoRestante = 3;
+                tiempoRestante = 2;
 
-                labelTemporizador.Text = "";
+                labelTemporizador.Text = tiempoRestante.ToString();
+                labelTemporizador.ForeColor = Color.Orange;
 
                 pictureBoxRojo.BackColor = Color.DarkGray;
                 pictureBoxNaranja.BackColor = Color.Orange;
@@ -204,9 +210,10 @@ namespace TrafficLight
                 && pictureBoxNaranja.BackColor == Color.Orange
                 && pictureBoxVerde.BackColor == Color.DarkGray)
             {
-                tiempoRestante = 26;
+                tiempoRestante = 25;
 
-                labelTemporizador.Text = "";
+                labelTemporizador.Text = tiempoRestante.ToString();
+                labelTemporizador.ForeColor = Color.Red;
 
                 pictureBoxRojo.BackColor = Color.Red;
                 pictureBoxNaranja.BackColor = Color.DarkGray;

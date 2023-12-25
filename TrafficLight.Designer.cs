@@ -43,7 +43,7 @@
             this.MaximizeBox = false;
             this.Name = "TrafficLight";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "TrafficLight";
             this.ResumeLayout(false);
 
         }
