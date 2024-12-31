@@ -8,3 +8,13 @@ C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.csproj.CoreCo
 C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.exe
 C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.pdb
 C:\Users\Juanma\Desktop\GitHub\TrafficLight\obj\Debug\TrafficLight.TrafficLight.resources
+C:\Users\juanm\Escritorio\Github\TrafficLight\bin\Debug\TrafficLight.exe.config
+C:\Users\juanm\Escritorio\Github\TrafficLight\bin\Debug\TrafficLight.exe
+C:\Users\juanm\Escritorio\Github\TrafficLight\bin\Debug\TrafficLight.pdb
+C:\Users\juanm\Escritorio\Github\TrafficLight\obj\Debug\TrafficLight.csproj.AssemblyReference.cache
+C:\Users\juanm\Escritorio\Github\TrafficLight\obj\Debug\TrafficLight.Properties.Resources.resources
+C:\Users\juanm\Escritorio\Github\TrafficLight\obj\Debug\TrafficLight.TrafficLight.resources
+C:\Users\juanm\Escritorio\Github\TrafficLight\obj\Debug\TrafficLight.csproj.GenerateResource.cache
+C:\Users\juanm\Escritorio\Github\TrafficLight\obj\Debug\TrafficLight.csproj.CoreCompileInputs.cache
+C:\Users\juanm\Escritorio\Github\TrafficLight\obj\Debug\TrafficLight.exe
+C:\Users\juanm\Escritorio\Github\TrafficLight\obj\Debug\TrafficLight.pdb

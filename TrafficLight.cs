@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,14 +18,66 @@ namespace TrafficLight
         private PictureBox pictureBoxRojo;
         private PictureBox pictureBoxNaranja;
         private PictureBox pictureBoxVerde;
-        private Timer timer;
+        private Timer timerNormal = new Timer();
+        private Timer timerDanger = new Timer();
+        private Timer timerWarning = new Timer();
         private int tiempoRestante;
 
         public TrafficLight()
         {
             InitializeComponent();
             InitializeSemaforo();
-            InitializeTimer();
+            DefinirColoresIniciales();
+            AutomaticMode();
+        }
+
+        private void MostrarMensaje(string mensaje)
+        {
+            Task.Run(() =>
+            {
+                MessageBox.Show(mensaje);
+            });
+        }
+
+        private void AutomaticMode()
+        {
+            PararTemporizadores();
+            if (DateTime.Now.Hour > 22)
+            {
+                InitializeWarningMode();
+                //MostrarMensaje("La hora es mayor a 22hs. Se inicializa el modo 'Warning'");
+            }
+            else if (DateTime.Now.Hour > 0 && DateTime.Now.Hour <= 5)
+            {
+                InitializeDangerMode();
+                //MostrarMensaje("La hora es mayor a 0hs y menor a 5hs. Se inicializa el modo 'Danger'");
+            }
+            else
+            {
+                InitializeNormalMode();
+                //MostrarMensaje("La hora es mayor a 5hs y menor a 22hs. Se inicializa el modo 'Normal'");
+            }
+        }
+
+        private void DefinirColoresIniciales()
+        {
+            pictureBoxRojo.BackColor = Color.DarkGray;
+            pictureBoxNaranja.BackColor = Color.DarkGray;
+            pictureBoxVerde.BackColor = Color.DarkGray;
+            labelTemporizador.Text = "";
+            labelTemporizador.ForeColor = Color.DarkGray;
+        }
+
+        private void PararTemporizadores()
+        {
+            timerNormal.Stop();
+            timerDanger.Stop();
+            timerWarning.Stop();
+
+            // Desvincular todos los eventos
+            timerNormal.Tick -= Timer_Tick;
+            timerDanger.Tick -= Timer_Tick_Danger;
+            timerWarning.Tick -= Timer_Tick_Warning;
         }
 
         private void InitializeSemaforo()
@@ -91,7 +139,7 @@ namespace TrafficLight
             labelTemporizador = new Label();
             labelTemporizador.Size = new Size(80, 80);
             labelTemporizador.Text = "";
-            labelTemporizador.Font = new Font("DS-Digital", 40, FontStyle.Bold);
+            labelTemporizador.Font = new Font("DS-Digital", 35, FontStyle.Bold);
             labelTemporizador.ForeColor = Color.White;
             labelTemporizador.TextAlign = ContentAlignment.MiddleCenter;
 
@@ -133,18 +181,18 @@ namespace TrafficLight
             return roundedRegion;
         }
 
-        private void InitializeTimer()
+        private void InitializeNormalMode()
         {
-            timer = new Timer();
-            timer.Interval = 1000;
-            timer.Tick += Timer_Tick;
+            timerNormal.Tick -= Timer_Tick; // Desvincula cualquier suscriptor existente
+            timerNormal.Interval = 1000;
+            timerNormal.Tick += Timer_Tick; // Asocia el evento
             tiempoRestante = 25;
             labelTemporizador.Text = tiempoRestante.ToString();
-            DefinirColoresIniciales();
-            timer.Start();
+            DefinirColoresInicialesNormal();
+            timerNormal.Start();
         }
 
-        private void DefinirColoresIniciales()
+        private void DefinirColoresInicialesNormal()
         {
             pictureBoxRojo.BackColor = Color.Red;
             pictureBoxNaranja.BackColor = Color.DarkGray;
@@ -161,64 +209,225 @@ namespace TrafficLight
 
             if (tiempoRestante <= 0)
             {
-                CambiarLuzSemaforo();
+                CambiarLuzSemaforoNormal();
             }
         }
 
-        private void CambiarLuzSemaforo()
+        private void CambiarLuzSemaforoNormal()
         {
-            if (pictureBoxRojo.BackColor == Color.Red
+            if (DateTime.Now.Hour > 22)
+            {
+                PararTemporizadores();
+                InitializeWarningMode();
+                MostrarMensaje("La hora es mayor a 22hs. Se inicializa el modo 'Warning'");
+            }
+            else if (DateTime.Now.Hour > 0 && DateTime.Now.Hour <= 5)
+            {
+                PararTemporizadores();
+                InitializeDangerMode();
+                MostrarMensaje("La hora es mayor a 0hs y menor a 5hs. Se inicializa el modo 'Danger'");
+            }
+            else
+            {
+                if (pictureBoxRojo.BackColor == Color.Red
                 && pictureBoxNaranja.BackColor == Color.DarkGray
                 && pictureBoxVerde.BackColor == Color.DarkGray)
-            {
-                tiempoRestante = 2;
+                {
+                    tiempoRestante = 2;
 
-                labelTemporizador.Text = tiempoRestante.ToString();
-                labelTemporizador.ForeColor = Color.Orange;
+                    labelTemporizador.Text = tiempoRestante.ToString();
+                    labelTemporizador.ForeColor = Color.Orange;
 
-                pictureBoxRojo.BackColor = Color.Red;
-                pictureBoxNaranja.BackColor = Color.Orange;
-                pictureBoxVerde.BackColor = Color.DarkGray;
+                    pictureBoxRojo.BackColor = Color.Red;
+                    pictureBoxNaranja.BackColor = Color.Orange;
+                    pictureBoxVerde.BackColor = Color.DarkGray;
+                }
+                else if (pictureBoxRojo.BackColor == Color.Red
+                    && pictureBoxNaranja.BackColor == Color.Orange
+                    && pictureBoxVerde.BackColor == Color.DarkGray)
+                {
+                    tiempoRestante = 30;
+
+                    labelTemporizador.Text = tiempoRestante.ToString();
+                    labelTemporizador.ForeColor = Color.Green;
+
+                    pictureBoxRojo.BackColor = Color.DarkGray;
+                    pictureBoxNaranja.BackColor = Color.DarkGray;
+                    pictureBoxVerde.BackColor = Color.Green;
+                }
+                else if (pictureBoxRojo.BackColor == Color.DarkGray
+                    && pictureBoxNaranja.BackColor == Color.DarkGray
+                    && pictureBoxVerde.BackColor == Color.Green)
+                {
+                    tiempoRestante = 2;
+
+                    labelTemporizador.Text = tiempoRestante.ToString();
+                    labelTemporizador.ForeColor = Color.Orange;
+
+                    pictureBoxRojo.BackColor = Color.DarkGray;
+                    pictureBoxNaranja.BackColor = Color.Orange;
+                    pictureBoxVerde.BackColor = Color.DarkGray;
+                }
+                else if (pictureBoxRojo.BackColor == Color.DarkGray
+                    && pictureBoxNaranja.BackColor == Color.Orange
+                    && pictureBoxVerde.BackColor == Color.DarkGray)
+                {
+                    tiempoRestante = 25;
+
+                    labelTemporizador.Text = tiempoRestante.ToString();
+                    labelTemporizador.ForeColor = Color.Red;
+
+                    pictureBoxRojo.BackColor = Color.Red;
+                    pictureBoxNaranja.BackColor = Color.DarkGray;
+                    pictureBoxVerde.BackColor = Color.DarkGray;
+                }
             }
-            else if (pictureBoxRojo.BackColor == Color.Red
-                && pictureBoxNaranja.BackColor == Color.Orange
-                && pictureBoxVerde.BackColor == Color.DarkGray)
+        }
+
+        private void peligroToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PararTemporizadores();
+            InitializeDangerMode();
+        }
+
+        private void precaucionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PararTemporizadores();
+            InitializeWarningMode();
+        }
+
+        private void modoNormalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PararTemporizadores();
+            InitializeNormalMode();
+        }
+
+        private void InitializeDangerMode()
+        {
+            timerDanger.Tick -= Timer_Tick_Danger; // Desvincula cualquier suscriptor existente
+            timerDanger.Interval = 1000;
+            timerDanger.Tick += Timer_Tick_Danger; // Asocia el evento
+            tiempoRestante = 1;
+            labelTemporizador.Text = "Ø";
+            DefinirColoresInicialesDanger();
+            timerDanger.Start();
+        }
+
+        private void DefinirColoresInicialesDanger()
+        {
+            pictureBoxRojo.BackColor = Color.Red;
+            pictureBoxNaranja.BackColor = Color.DarkGray;
+            pictureBoxVerde.BackColor = Color.DarkGray;
+            labelTemporizador.ForeColor = Color.Red;
+        }
+
+        private void Timer_Tick_Danger(object sender, EventArgs e)
+        {
+            tiempoRestante--;
+
+            labelTemporizador.Text = "";
+
+            if (tiempoRestante <= 0)
             {
-                tiempoRestante = 30;
-
-                labelTemporizador.Text = tiempoRestante.ToString();
-                labelTemporizador.ForeColor = Color.Green;
-
-                pictureBoxRojo.BackColor = Color.DarkGray;
-                pictureBoxNaranja.BackColor = Color.DarkGray;
-                pictureBoxVerde.BackColor = Color.Green;
+                CambiarLuzSemaforoDanger();
             }
-            else if (pictureBoxRojo.BackColor == Color.DarkGray
-                && pictureBoxNaranja.BackColor == Color.DarkGray
-                && pictureBoxVerde.BackColor == Color.Green)
+        }
+
+        private void CambiarLuzSemaforoDanger()
+        {
+            if (DateTime.Now.Hour > 22)
             {
-                tiempoRestante = 2;
+                PararTemporizadores();
+                InitializeWarningMode();
+                MostrarMensaje("La hora es mayor a 22hs. Se inicializa el modo 'Warning'");
 
-                labelTemporizador.Text = tiempoRestante.ToString();
-                labelTemporizador.ForeColor = Color.Orange;
-
-                pictureBoxRojo.BackColor = Color.DarkGray;
-                pictureBoxNaranja.BackColor = Color.Orange;
-                pictureBoxVerde.BackColor = Color.DarkGray;
             }
-            else if (pictureBoxRojo.BackColor == Color.DarkGray
-                && pictureBoxNaranja.BackColor == Color.Orange
-                && pictureBoxVerde.BackColor == Color.DarkGray)
+            else if (DateTime.Now.Hour > 5 && DateTime.Now.Hour <= 22)
             {
-                tiempoRestante = 25;
-
-                labelTemporizador.Text = tiempoRestante.ToString();
-                labelTemporizador.ForeColor = Color.Red;
-
-                pictureBoxRojo.BackColor = Color.Red;
-                pictureBoxNaranja.BackColor = Color.DarkGray;
-                pictureBoxVerde.BackColor = Color.DarkGray;
+                PararTemporizadores();
+                InitializeNormalMode();
+                MostrarMensaje("La hora es mayor a 5hs y menor a 22hs. Se inicializa el modo 'Normal'");
             }
+            else
+            {
+                if (pictureBoxRojo.BackColor == Color.Red)
+                {
+                    tiempoRestante = 1;
+                    pictureBoxRojo.BackColor = Color.DarkGray;
+                }
+                else
+                {
+                    tiempoRestante = 1;
+                    pictureBoxRojo.BackColor = Color.Red;
+                    labelTemporizador.Text = "Ø";
+                }
+            }
+        }
+
+        private void InitializeWarningMode()
+        {
+            timerWarning.Tick -= Timer_Tick_Warning; // Desvincula cualquier suscriptor existente
+            timerWarning.Interval = 1000;
+            timerWarning.Tick += Timer_Tick_Warning; // Asocia el evento
+            tiempoRestante = 1;
+            labelTemporizador.Text = "⚠";
+            DefinirColoresInicialesWarning();
+            timerWarning.Start();
+        }
+
+        private void DefinirColoresInicialesWarning()
+        {
+            pictureBoxRojo.BackColor = Color.DarkGray;
+            pictureBoxNaranja.BackColor = Color.Orange;
+            pictureBoxVerde.BackColor = Color.DarkGray;
+            labelTemporizador.ForeColor = Color.Orange;
+        }
+
+        private void Timer_Tick_Warning(object sender, EventArgs e)
+        {
+            tiempoRestante--;
+
+            labelTemporizador.Text = "";
+
+            if (tiempoRestante <= 0)
+            {
+                CambiarLuzSemaforoWarning();
+            }
+        }
+
+        private void CambiarLuzSemaforoWarning()
+        {
+            if (DateTime.Now.Hour > 0 && DateTime.Now.Hour <= 5)
+            {
+                PararTemporizadores();
+                InitializeDangerMode();
+                MostrarMensaje("La hora es mayor a 0hs y menor a 5hs. Se inicializa el modo 'Danger'");
+            }
+            else if (DateTime.Now.Hour > 5 && DateTime.Now.Hour <= 22)
+            {
+                PararTemporizadores();
+                InitializeNormalMode();
+                MostrarMensaje("La hora es mayor a 5hs y menor a 22hs. Se inicializa el modo 'Normal'");
+            }
+            else
+            {
+                if (pictureBoxNaranja.BackColor == Color.Orange)
+                {
+                    tiempoRestante = 1;
+                    pictureBoxNaranja.BackColor = Color.DarkGray;
+                }
+                else
+                {
+                    tiempoRestante = 1;
+                    pictureBoxNaranja.BackColor = Color.Orange;
+                    labelTemporizador.Text = "⚠";
+                }
+            }
+        }
+
+        private void modoAutomáticoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AutomaticMode();
         }
     }
 
